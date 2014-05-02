@@ -8,6 +8,6 @@ Tinytest.add 'Pronouncing - Collection exists', (test) ->
 if Meteor.isServer
   Tinytest.add 'Pronouncing - Count', (test) ->
     count = Pronunciations.find().count()
-    expected = 133334
+    expected = 129464
     test.equal count, expected, "Expected #{ expected } pronunciations"
 

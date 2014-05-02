@@ -8,12 +8,15 @@ PRONUNCIATIONS_INPUT = path.resolve __dirname, 'pronunciations.txt'
 PRONUNCIATIONS_OUTPUT = path.resolve __dirname, 'pronunciations.json'
 
 PRONUNCIATIONS_URL = \
-    'http://svn.code.sf.net/p/cmusphinx/code/trunk/cmudict/cmudict.0.7a'
+  'http://webdocs.cs.ualberta.ca/~kondrak/cmudict/cmudict.rep'
 
 createFixtures = (data) ->
+  ids = {}
   fixtures = []
   for line in data.split '\n'
-    if (fixture = tryRenderFixture line)?
+    fixture = tryRenderFixture line
+    if fixture? and not ids.hasOwnProperty fixture._id
+      ids[fixture._id] = null
       fixtures.push fixture
   fixtures
 
@@ -46,23 +49,53 @@ readPronunciations = (callback) ->
 
 tryRenderFixture = (line) ->
   # Skip empty lines and comments
-  return if line.length == 0 or /^;;;/.test line
-  [id, parts...] = line.split /\s+/
-  idMatch = id.match /^([^A-Z]+)?(['\-.0-9A-Z_]+)(?:\((\d+)\))?$/
-  error = ->
-    throw "Invalid entry: #{ line }"
-  if not idMatch? or parts.length == 0
-    error()
-  pronunciation = for part in parts
-    partMatch = part.match /^([A-Z]+)([0-2])?$/
-    error() unless partMatch?
-    phoneme: partMatch[1]
-    stress: parseInt partMatch[2] ? 0
-  _id: id
-  appearance: (idMatch[1] ? idMatch[2]).replace '_', ' '
-  name: idMatch[2]
-  variant: parseInt idMatch[3] ? 0
-  pronunciation: pronunciation
+  if line.length == 0 or /^##/.test line
+    return
+
+  # The info and syllables are separated by whitespace.
+  [rawInfo, rawPronunciation...] = line.split /\s+/
+
+  #
+  # Parse pronunciation
+  #
+
+  # Syllables are separated a dash.
+  rawSyllables = []
+  rawSyllable = []
+  for token in rawPronunciation
+    if token == '-'
+      rawSyllables.push rawSyllable
+      rawSyllable = []
+    else
+      rawSyllable.push token
+  rawSyllables.push rawSyllable
+
+  syllables =
+    for rawSyllable in rawSyllables
+      for rawPhoneme in rawSyllable
+        # A phoneme may have an optional stress.
+        match = rawPhoneme.match /^([A-Z]+)([0-2])?$/
+        phoneme = phoneme: match[1]
+        phoneme.stress = parseInt match[2] if match[2]?
+        phoneme
+
+  # Parse info to appearance (optional), name, and variation (optional).
+  match = rawInfo.match /^([^A-Z]+)?(['\-.0-9A-Z_]+)(?:\((\d+)\))?$/
+
+  pronunciation =
+    # rawInfo provides a consistent ID, allowing the collection to be
+    # rebuild.
+    _id: rawInfo
+
+    # Spaces are represented with underscores.
+    appearance: (match[1] ? match[2]).replace '_', ' '
+
+    name: match[2]
+    syllables: syllables
+
+  pronunciation.variant = parseInt match[3] if match[3]?
+
+  pronunciation
 
 main = ->
   downloadIfRequireThenReadPronunciations (err, data) ->
