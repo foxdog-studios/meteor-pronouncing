@@ -59,7 +59,7 @@ tryRenderFixture = (line) ->
     phoneme: partMatch[1]
     stress: parseInt partMatch[2] ? 0
   _id: id
-  apperance: idMatch[1] ? idMatch[2]
+  apperance: (idMatch[1] ? idMatch[2]).replace '_', ' '
   name: idMatch[2]
   variant: parseInt idMatch[3] ? 0
   pronunciation: pronunciation
