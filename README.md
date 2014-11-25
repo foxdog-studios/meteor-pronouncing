@@ -7,7 +7,7 @@ A Meteor package that provides a pronouncing dictionary of English.
 Installation
 ------------
 
-Install via by running;
+Install by running;
 
 ```ShellSession
 $ meteor add fds:pronouncing
