@@ -1,28 +1,26 @@
-Pronouncing
+fds:pronouncing
 ===========
 
-A Meteor smart package that provides a pronouncing dictionary of English.
+A Meteor package that provides a pronouncing dictionary of English.
 
 
 Installation
 ------------
 
-Install via [Atmosphere](https://atmospherejs.com/package/pronouncing) using
-[Meteorite](https://github.com/oortcloud/meteorite/#installing-meteorite) by
-running;
+Install via by running;
 
-```Shell
-$ mrt add pronouncing
+```ShellSession
+$ meteor add fds:pronouncing
 ```
 
-within your [Meteor](https://www.meteor.com/) project.
+within a [Meteor](https://www.meteor.com/) project.
 
 
 Usage
 -----
 
 The package exports a single collection called `Pronunciations`. The first time
-a Meteor project is run after Pronouncing has been install, the package will
+a Meteor project is run after Pronouncing has been installed, the package will
 automatically initialize the `Pronunciations` collection (this takes a while).
 If you run `meteor reset`, the collection will automatically re-initialize.
 

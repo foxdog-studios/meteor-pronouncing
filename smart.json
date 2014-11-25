@@ -1,9 +1,0 @@
-{
-  "name": "pronouncing",
-  "description": "Provides a pronouncing dictionary of English",
-  "homepage": "https://github.com/foxdog-studios/meteor-pronouncing",
-  "author": "Peter Sutton <foxxy@foxdogstudios.com> (https://foxdogstudios.com)",
-  "version": "0.3.0",
-  "git": "https://github.com/foxdog-studios/meteor-pronouncing.git",
-  "packages": {}
-}
